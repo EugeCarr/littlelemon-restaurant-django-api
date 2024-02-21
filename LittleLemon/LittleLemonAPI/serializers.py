@@ -19,3 +19,56 @@ class MenuItemSerializer(serializers.ModelSerializer):
         model = models.MenuItem
         fields = ['id', 'title', 'price', 'featured', 'category', 'category_id']
         depth = 1
+ 
+ 
+class MenuItemHelperSerializer(serializers.ModelSerializer):
+    class Meta():
+        model = models.MenuItem
+        fields = ['id', 'title', 'category_id']
+        depth = 1
+               
+        
+class UserSerializer(serializers.ModelSerializer):
+    class Meta():
+        model = User
+        fields = ['id', 'username', 'first_name']
+
+class CartReadSerializer(serializers.ModelSerializer):
+    menuItem = MenuItemSerializer(read_only=True)
+    menuItem_id = serializers.IntegerField(write_only=True)
+    user = UserSerializer(read_only=True)
+    user_id = serializers.IntegerField(write_only=True)
+    
+    class Meta():
+        model = models.Cart
+        fields = ['id', 'user', 'user_id', 'menuItem', 'menuItem_id', 'price', 'quantity', 'unit_price']
+        depth = 1
+        
+
+class OrderItemViewCreateSerializer(serializers.ModelSerializer):
+    menuItem = MenuItemHelperSerializer(read_only=True)
+    menuItem_id = serializers.IntegerField(write_only=True)
+    
+    class Meta():
+        model = models.OrderItem
+        fields = ['menuItem', 'menuItem_id', 'quantity', 'unit_price', 'price']    
+        depth   = 2
+
+class OrderCreateSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
+    user_id = serializers.IntegerField(write_only=True)    
+    delivery_crew = UserSerializer(read_only=True)
+    items = OrderItemViewCreateSerializer(many=True, read_only=True)
+    class Meta():
+        model = models.Order
+        fields = ['id', 'user', 'user_id', 'delivery_crew', 'date', 'total', 'status', 'items',  ]
+        
+class OrderUpdateSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
+    delivery_crew = UserSerializer(read_only=True)
+    delivery_crew_id = serializers.IntegerField(write_only=True, required=False)
+    items = OrderItemViewCreateSerializer(many=True, read_only=True)
+    
+    class Meta():
+        model = models.Order
+        fields = ['id', 'user', 'delivery_crew_id', 'delivery_crew', 'status', 'items',  ]

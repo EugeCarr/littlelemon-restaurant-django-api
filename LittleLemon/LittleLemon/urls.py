@@ -20,6 +20,8 @@ from django.urls import path, include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('LittleLemonAPI.urls')),
+    # path('api/users/', include('djoser.urls')),
+    # path('', include('djoser.urls.authtoken')),
     path('auth/', include('djoser.urls')),
     path('auth/', include('djoser.urls.authtoken')),
     # You may have to revise these so that you can map them to the expected endpoints in the task
