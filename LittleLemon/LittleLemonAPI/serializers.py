@@ -19,6 +19,9 @@ class MenuItemSerializer(serializers.ModelSerializer):
         model = models.MenuItem
         fields = ['id', 'title', 'price', 'featured', 'category', 'category_id']
         depth = 1
+        extra_kwargs = {
+            'price': {'min_value': 0},
+        }
  
  
 class MenuItemHelperSerializer(serializers.ModelSerializer):
@@ -43,6 +46,11 @@ class CartReadSerializer(serializers.ModelSerializer):
         model = models.Cart
         fields = ['id', 'user', 'user_id', 'menuItem', 'menuItem_id', 'price', 'quantity', 'unit_price']
         depth = 1
+        extra_kwargs = {
+            'price': {'min_value': 0},
+            'unit_price': {'min_value': 0},
+            'quantity': {'min_value': 0},
+        }
         
 
 class OrderItemViewCreateSerializer(serializers.ModelSerializer):
@@ -53,6 +61,11 @@ class OrderItemViewCreateSerializer(serializers.ModelSerializer):
         model = models.OrderItem
         fields = ['menuItem', 'menuItem_id', 'quantity', 'unit_price', 'price']    
         depth   = 2
+        extra_kwargs = {
+            'price': {'min_value': 0},
+            'unit_price': {'min_value': 0},
+            'quantity': {'min_value': 0},
+        }
 
 class OrderCreateSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
@@ -62,6 +75,9 @@ class OrderCreateSerializer(serializers.ModelSerializer):
     class Meta():
         model = models.Order
         fields = ['id', 'user', 'user_id', 'delivery_crew', 'date', 'total', 'status', 'items',  ]
+        extra_kwargs = {
+            'total': {'min_value': 0},
+        }
         
 class OrderUpdateSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
@@ -72,3 +88,6 @@ class OrderUpdateSerializer(serializers.ModelSerializer):
     class Meta():
         model = models.Order
         fields = ['id', 'user', 'delivery_crew_id', 'delivery_crew', 'status', 'items',  ]
+        extra_kwargs = {
+            'total': {'min_value': 0},
+        }

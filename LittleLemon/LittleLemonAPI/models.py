@@ -14,7 +14,7 @@ class MenuItem(models.Model):
     price = models.DecimalField(max_digits = 6, decimal_places=2, db_index= True)
     featured = models.BooleanField(db_index=True)
     category = models.ForeignKey(Category, on_delete=models.PROTECT)
-    
+        
     def __str__(self):
         return self.title
     
@@ -26,7 +26,7 @@ class Cart(models.Model):
     price =models.DecimalField(max_digits=6, decimal_places=2)
     
     class Meta:
-        unique_together = ('menuItem', 'user')
+        unique_together = ('menuItem', 'user')        
         
     def __str__(self):
         return "{}: {}".format(self.user, self.menuItem)
@@ -39,7 +39,7 @@ class Order(models.Model):
     date = models.DateField(db_index=True)
     
     class Meta:
-        unique_together = ('user', 'date')
+        unique_together = ('user', 'date')        
     
     def __str__(self) -> str:
         return "{}: Order for {} on: {}".format(self.id,self.user, self.date)
@@ -53,5 +53,4 @@ class OrderItem(models.Model):
     
     class Meta:
         unique_together = ('order', 'menuItem')
-        
 

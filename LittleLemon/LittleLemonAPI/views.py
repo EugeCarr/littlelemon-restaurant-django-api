@@ -41,6 +41,8 @@ class GroupsDeliveryViewSet(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated, IsManager| IsAdminUser]
     serializer_class = serializers.GroupsManagerSerializer
     queryset = User.objects.filter(groups__name="Delivery Crew")
+    ordering_fields = ['username']
+    search_fields= ['firstName']
         
     def post(self, request, *args, **kwargs):
         user = get_object_or_404(User, username=request.data.get("username"))
@@ -52,6 +54,8 @@ class GroupsDeliveryRemoveViewSet(generics.DestroyAPIView):
     permission_classes = [IsAuthenticated, IsManager| IsAdminUser]
     serializer_class = serializers.GroupsManagerSerializer
     queryset = User.objects.filter(groups__name="Delivery Crew")
+    ordering_fields = ['username']
+    search_fields= ['first_name']
     
     def delete(self,request, userId, *args, **kwargs):
         user = get_object_or_404(User, id=userId)
@@ -64,6 +68,8 @@ class MenuItemsListCreateView(generics.ListCreateAPIView):
     throttle_classes = [AnonRateThrottle, UserRateThrottle]
     serializer_class = serializers.MenuItemSerializer
     queryset = models.MenuItem.objects.select_related('category').all()
+    ordering_fields = ['category__title', 'title']
+    search_fields= ['title']
     
     def get_permissions(self):
         if self.request.method == 'GET':
@@ -76,7 +82,9 @@ class MenuItemSingleView(generics.RetrieveUpdateDestroyAPIView):
     throttle_classes = [AnonRateThrottle, UserRateThrottle]
     serializer_class = serializers.MenuItemSerializer
     queryset = models.MenuItem.objects.select_related('category').all()
-
+    ordering_fields = ['category__title', 'title']
+    search_fields= ['title']
+    
     def get_permissions(self):
         if self.request.method == 'GET':
             self.permission_classes = [IsAuthenticated]
@@ -88,6 +96,9 @@ class CartManageView(generics.ListCreateAPIView):
     throttle_classes = [AnonRateThrottle, UserRateThrottle]
     serializer_class = serializers.CartReadSerializer
     permission_classes = [IsAuthenticated]
+    ordering_fields = ['menuItem__title', 'price']
+    search_fields= ['menuItem__title']
+    
     def get_queryset(self):
         return models.Cart.objects.select_related('menuItem').filter(user_id=self.request.user.id)
     
@@ -121,6 +132,8 @@ class CartManageView(generics.ListCreateAPIView):
 class OrderManageView(generics.ListAPIView):
     throttle_classes = [AnonRateThrottle, UserRateThrottle]
     serializer_class = serializers.OrderCreateSerializer
+    ordering_fields = ['date']
+    search_fields= ['date', 'user__username']
     
     def get_permissions(self):
         if self.request.method == "POST":
