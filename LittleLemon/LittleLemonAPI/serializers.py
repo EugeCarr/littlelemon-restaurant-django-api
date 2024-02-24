@@ -10,7 +10,7 @@ class GroupsManagerSerializer(serializers.ModelSerializer):
 class CategorySerializer(serializers.ModelSerializer):
     class Meta():
         model = models.Category
-        fields = "__all__"
+        fields = ["id", "title"]
         
 class MenuItemSerializer(serializers.ModelSerializer):
     category = CategorySerializer(read_only=True)

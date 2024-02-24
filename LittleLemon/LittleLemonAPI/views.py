@@ -63,7 +63,21 @@ class GroupsDeliveryRemoveViewSet(generics.DestroyAPIView):
             return Response(status=status.HTTP_404_NOT_FOUND, data={"message": "User is not in Delivery Crew Group"})
         Group.objects.get(name="Delivery Crew").user_set.remove(user)
         return Response(data={"message": "User successfully removed from Managers group"}, status=status.HTTP_200_OK)
-        
+  
+class CategoryListCreateView(generics.ListCreateAPIView):
+    throttle_classes = [AnonRateThrottle, UserRateThrottle]
+    serializer_class = serializers.CategorySerializer
+    queryset = models.Category.objects.all()
+    ordering_fields = [ 'title']
+    search_fields= ['title']
+    
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            self.permission_classes = [IsAuthenticated]
+        else:
+            self.permission_classes = [IsAuthenticated, IsManager| IsAdminUser]
+        return[permission() for permission in self.permission_classes]
+
 class MenuItemsListCreateView(generics.ListCreateAPIView):
     throttle_classes = [AnonRateThrottle, UserRateThrottle]
     serializer_class = serializers.MenuItemSerializer

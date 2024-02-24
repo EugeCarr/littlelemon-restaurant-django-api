@@ -11,4 +11,5 @@ urlpatterns = [
     path(route='cart/menu-items', view=views.CartManageView.as_view(), name="cart-menu-items"),
     path(route='orders', view=views.OrderManageView.as_view(), name="orders"),
     path(route='orders/<int:pk>', view=views.OrderSingleManageView.as_view(), name="orders-single-view"),
+    path(route='categories', view=views.CategoryListCreateView.as_view(), name="category-list"),
 ]
